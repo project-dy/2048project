@@ -8,4 +8,4 @@ Don't translate in Korean.
 >이때 참고할 책의 예제소스는
 >[이곳](https://project-dy.github.io/Noneinformation-0x1-/Link_%EC%98%88%EC%A0%9C/)에 링크 되어 있다.
 
->참고로 내가 직접 만들지 않았고, 참고 하는 것일 뿐이다.
+>참고로 위 링크와 연결돠어 잇는 두개의 예제 소스는 내가 직접 만들지 않았고, 참고 하는 것일 뿐이다.
