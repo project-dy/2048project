@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="ko">
+<html>
 <head>
 <meta charset="UTF-8">
 <title>2048</title>
@@ -42,6 +41,102 @@
   let data = [];
   const history = [];
 
+  function record(n, name, pw){
+    console.log('기록 시작');
+    if(window.localStorage.getItem(pw)){
+      console.log('이전의 기록 발견!');
+      const prev = window.localStorage.getItem(pw);
+      if(prev < n){
+        window.localStorage.setItem(pw,n);
+        console.log('최고기록 달성!');
+        alert(n+'점\n최고기록 달성!\n축하드립니다!!🎉🎉');
+        console.log('완료');
+      } else if(prev > n){
+        const prev_temp = prev-n;
+        alert(prev_temp+'점 차이로 아쉽게 실패!');
+        const want_record = confirm('기록을 갱신 하시겠습니까?');
+        if(want_record){
+          if(confirm('기존기록은 삭제 됩니다.\n그래도 하시겠습니까?')){
+            window.localStorage.setItem(pw,n);
+            console.log('완료')
+          } else{
+            console.log('cancled');
+          };
+          return;
+        } else{
+          return;
+        };
+      } else{
+        console.log('동점!')
+        alert(n+'점으로 동점입니다.')
+      };
+    } else {
+      console.log('첫번째 기록!');
+      window.localStorage.setItem(pw,n)
+      console.log('기록 완료!')
+    };
+  }
+
+  function login(n){
+    let restart_function = 0
+    console.log(n+'점을 기록.');
+    const name = prompt('당신의 닉네임을 작성해주세요.');
+    const pw = prompt('비밀번호를 입력해주세요');
+    if(name){
+      console.log('닉네임: ' + name);
+      let name_list = false;
+      if(window.localStorage.getItem(name)){
+        name_list = window.localStorage.getItem(name);
+        console.log(String(name_list)+String(pw));
+        if(name_list == true){
+          console.log('가입필요.');
+          pw1 == prompt('신규 가입중...\n비밀번호를 다시 한번 입력해주세요');
+          if(pw == pw1){
+            window.localStorage.setItem(name, pw);
+            console.log('완료');
+          } else{
+            console.log('비밀번호 틀림');
+            alert('비밀번호가 틀렸습니다.');
+            restart_function = 1
+            // login(n);
+          };
+        } else if(name_list == pw){
+          console.log('기록 되어있는 닉네임.');
+        } else{
+          console.log('비밀번호 틀림');
+          alert('비밀번호가 틀렸습니다.');
+          restart_function = 1
+          // login(n);
+        };
+      } /*else if(pw != pw1){
+        console.log('비밀번호 틀림');
+        alert('비밀번호가 틀렸습니다.');
+        login(n);
+      }*/ else {
+        console.log('신규');
+        const pw1 = prompt('신규 가입중...\n비밀번호를 입력해주세요');
+        if(pw == pw1){
+         window.localStorage.setItem(name, pw);
+         console.log('완료');
+         alert('가입이 완료되었습니다. 본 계정은 본 기기에 한하여 사용이 가능합니다.')
+        } else{
+          console.log('비밀번호 틀림');
+          alert('비밀번호가 틀렸습니다.');
+          restart_function = 1
+        }
+      };
+      if(restart_function == 1){
+        login(n);
+      }
+      else{
+        record(n, name, pw);
+      };
+      // return;
+    } else{
+      return;
+    }
+  }
+
   function restore(n){
     console.log('되돌리기 요청됨.')
     if(how_many == 0){
@@ -64,22 +159,29 @@
       $hmr.textContent = how_many_temp
       data = prevData.table;
       draw();
+      console.log('완료!')
     }
   }
 
   function set_fail(n) {
-    alert(`패배했습니다... ${$score.textContent}점`)
-    const yesOrNo = confirm('한턴을 되돌리시겠습니까?')
-    console.log('패배\n\n되돌리기 = ' + yesOrNo)
+    alert(`패배했습니다... ${$score.textContent}점`);
+    if(n == 'manual') login(`${$score.textContent}`); // 수동으로 포기 할시 바로 기록여부 확인 후 종료.
+    const yesOrNo = confirm('한턴을 되돌리시겠습니까?');
+    console.log('패배\n\n되돌리기 = ' + yesOrNo);
     if(yesOrNo){
-      restore(n)
+      restore(n);
     } else{
-      return;
-    }
+      login(`${$score.textContent}`);
+    };
+  }
+
+  function complete(n){
+    alert('🎉🎉🎉\n축하합니다. 2048을 만들었습니다!\n🎉🎉🎉');
+    login(n);
   }
 
   $set_fail.addEventListener('click', () => {
-    set_fail();
+    set_fail('manual');
   })
 
   $back.addEventListener('click', () => {
@@ -135,7 +237,7 @@
     });
   }
 
-  startGame();
+    startGame();
 
   // data = [
   //   [32, 2, 4, 2],
@@ -254,8 +356,9 @@
     if (data.flat().includes(2048)) { // 승리
       draw();
       setTimeout(() => {
-        alert('축하합니다. 2048을 만들었습니다!');  
+        complete(2048);  
       }, 0);
+      // login($score.testContent)
     } else if (!data.flat().includes(0)) { // 빈 칸이 없으면 패배
       set_fail(1);
       // alert(`패배했습니다... ${$score.textContent}점`);
@@ -295,8 +398,6 @@
       moveCells('up');
     } 
   });
-
-
 </script>
 </body>
 </html>
