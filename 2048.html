@@ -1,5 +1,23 @@
-<html>
+<!DOCTYPE html>
+<html lang="ko">
 <head>
+<link rel="apple-touch-icon" sizes="57x57" href="./apple-icon-57x57.png">
+<link rel="apple-touch-icon" sizes="60x60" href="./apple-icon-60x60.png">
+<link rel="apple-touch-icon" sizes="72x72" href="./apple-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="./apple-icon-76x76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="./apple-icon-114x114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="./apple-icon-120x120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="./apple-icon-144x144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="./apple-icon-152x152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="./apple-icon-180x180.png">
+<link rel="icon" type="image/png" sizes="192x192"  href="./android-icon-192x192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="./favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="96x96" href="./favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="16x16" href="./favicon-16x16.png">
+<link rel="manifest" href="./manifest.json">
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="msapplication-TileImage" content="./ms-icon-144x144.png">
+<meta name="theme-color" content="#ffffff">
 <meta charset="UTF-8">
 <title>2048</title>
 <style>
@@ -145,8 +163,14 @@
       console.log('되돌리기 취소됨.')
       if (n === 1){
         alert('되돌릴수 없습니다.');
-        console.log('Notifaction was completed with Pop Up Message.')
-      }
+        console.log('Notifaction was completed with Pop Up Message.');
+        const confirm_record = confirm('점수를 기록 하시겠습니까?');
+        if(confirm_record){
+          login(`${$score.textContent}`);
+        } else{
+          return;
+        };
+      };
       return;
     } else{
       console.log('승인!')
@@ -238,14 +262,15 @@
   }
 
     startGame();
-
-  // data = [
-  //   [32, 2, 4, 2],
-  //   [64, 4, 8, 4],
-  //   [2, 1024, 1024, 32],
-  //   [32, 16, 64, 4],
-  // ];
-  // draw();
+  /*
+  data = [
+     [32, 2, 4, 2],
+     [64, 4, 8, 4],
+     [2, 1024, 1024, 32],
+     [32, 16, 64, 4],
+  ];
+  draw();
+  */
   function moveCells(direction) {
     history.push({
       table: JSON.parse(JSON.stringify(data)),
