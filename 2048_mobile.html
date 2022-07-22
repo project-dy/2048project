@@ -425,11 +425,11 @@
     } 
   });
  */
-  table.addEventListener('touchstart', (event) => {
-    startCoord = [event.clientX, event.clientY];
+  $table.addEventListener('touchstart', (event) => {
+    startCoord = [event.touches[0].clientX, event.touches[0].clientY];
   });
-  table.addEventListener('touchend', (event) => {
-    const endCoord = [event.clientX, event.clientY];
+  $table.addEventListener('touchend', (event) => {
+    const endCoord = [event.changedTouches[0].clientX, event.changedTouches[0].clientY];
     const diffX = endCoord[0] - startCoord[0];
     const diffY = endCoord[1] - startCoord[1];
     if (diffX < 0 && Math.abs(diffX) > Math.abs(diffY)) {
