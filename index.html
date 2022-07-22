@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cheack</title>
+</head>
+<body>
+  <h1>검사중...</h1><br>
+  <h1>cheacking browser...</h1><br>
+  <a href='./2048.html'>PC Version.</a><br>
+  <a href='./2048_mobile.html'>Mobile Version.</a><br>
+<script>
+  var filter = "win16|win32|win64|mac|macintel";
+  
+  if ( navigator.platform ) {
+    if ( filter.indexOf( navigator.platform.toLowerCase() ) < 0 ) {
+        //mobile
+        console.log('mobile 접속');
+        location.replace('./2048_mobile.html');
+    } else {
+        //pc
+        console.log('pc 접속');
+        location.replace('./2048.html');
+    };
+  };
+</script>
+</body>
+</html>
