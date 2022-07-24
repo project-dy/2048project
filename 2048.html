@@ -61,7 +61,15 @@
 
   function record(n, name, pw){
     console.log('기록 시작');
-    if(window.localStorage.getItem(pw)){
+    if(name === null || pw === null) {
+      alert('기록이 취소되었습니다.');
+      return;
+    };
+    if(!window.localStorage.getItem(pw)) {
+      console.log('첫번째 기록!');
+      window.localStorage.setItem(pw,n);
+      console.log('기록 완료!');
+    } else{
       console.log('이전의 기록 발견!');
       const prev = window.localStorage.getItem(pw);
       if(prev < n){
@@ -88,10 +96,6 @@
         console.log('동점!')
         alert(n+'점으로 동점입니다.')
       };
-    } else {
-      console.log('첫번째 기록!');
-      window.localStorage.setItem(pw,n)
-      console.log('기록 완료!')
     };
   }
 
@@ -99,7 +103,16 @@
     let restart_function = 0
     console.log(n+'점을 기록.');
     const name = prompt('당신의 닉네임을 작성해주세요.');
+    if(name == null) {
+      alert('기록이 취소되었습니다.');
+      return;
+    };
     const pw = prompt('비밀번호를 입력해주세요');
+    if(pw == null) {
+      alert('기록이 취소되었습니다.');
+      return;
+    };
+    console.log(pw);
     if(name){
       console.log('닉네임: ' + name);
       let name_list = false;
