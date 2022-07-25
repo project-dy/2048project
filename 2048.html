@@ -47,13 +47,15 @@
   <button id="back">되돌리기</button>
   <span id="how_many_remain">3회 남음</span>
   <button id="Fail">포기하기</button>
+  <button id="record">기록하기</button>
 </div>
 <script>
   const $table = document.getElementById('table');
   const $score = document.getElementById('score');
   const $back = document.getElementById('back');
   const $hmr = document.getElementById('how_many_remain');
-  const $set_fail = document.getElementById('Fail')
+  const $set_fail = document.getElementById('Fail');
+  const $record = document.getElementById('record');
   let how_many = 3;
   let how_many_temp;
   let data = [];
@@ -63,6 +65,7 @@
     console.log('기록 시작');
     if(name === null || pw === null) {
       alert('기록이 취소되었습니다.');
+      console.log('취소!');
       return;
     };
     if(!window.localStorage.getItem(pw)) {
