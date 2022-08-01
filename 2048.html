@@ -52,6 +52,8 @@
   <span id="information"></span>
 </div>
 <script>
+  let only_move = 1;
+  const move_audio = new Audio('swoosh.mp3');
   const lose_audio = new Audio('2048Lose_Mastering.wav');
   const added = new Audio('pop.flac');
   const $table = document.getElementById('table');
@@ -427,6 +429,11 @@
     } else {
       put2ToRandomCell();
       draw();
+    }
+    if (only_move = 1) {
+      move_audio.play();
+    } else {
+      only_move = 0;
     }
   }
 
