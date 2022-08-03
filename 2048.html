@@ -52,7 +52,11 @@
   <span id="information"></span>
 </div>
 <script>
+  let end = 0;
+  let lose = 0;
   let only_move = 1;
+  let removedAllEventListener = 0;
+  const congratulation_audio = new Audio('congratulation.wav');
   const move_audio = new Audio('swoosh.mp3');
   const lose_audio = new Audio('2048Lose_Mastering.wav');
   const added = new Audio('pop.flac');
@@ -69,11 +73,12 @@
   const history = [];
 
   function removeAllEventListener(){
-    window.removeEventListener('keyup', key); // 패배시 이벤트 리스너 제거.
-    window.removeEventListener('mousedown', mousedown); // 패배시 이벤트 리스너 제거.
-    window.removeEventListener('mouseup', mouseup); // 패배시 이벤트 리스너 제거.
-    $table.removeEventListener('touchstart', touchstart); // 패배시 이벤트 리스너 제거.
-    $table.removeEventListener('touchend', touchend); // 패배시 이벤트 리스너 제거.
+    window.removeEventListener('keyup', key, false); // 패배시 이벤트 리스너 제거.
+    window.removeEventListener('mousedown', mousedown, false); // 패배시 이벤트 리스너 제거.
+    window.removeEventListener('mouseup', mouseup, false); // 패배시 이벤트 리스너 제거.
+    $table.removeEventListener('touchstart', touchstart, false); // 패배시 이벤트 리스너 제거.
+    $table.removeEventListener('touchend', touchend, false); // 패배시 이벤트 리스너 제거.
+    removedAllEventListener = 1;
   };
 
   function record(n, name, pw){
@@ -123,7 +128,6 @@
     const name = prompt('당신의 닉네임을 작성해주세요.');
     if(name == null) {
       alert('기록이 취소되었습니다.');
-      removeAllEventListener;
       return;
     };
     const pw = prompt('비밀번호를 입력해주세요');
@@ -185,6 +189,9 @@
     } else{
       return;
     }
+    if(lose == 1){
+        removeAllEventListener;
+    };
   }
 
   function restore(n){
@@ -220,6 +227,8 @@
   }
 
   function set_fail(n) {
+    end = 1;
+    lose = 1;
     alert(`패배했습니다... ${$score.textContent}점`);
     if(n == 'manual') login(`${$score.textContent}`); // 수동으로 포기 할시 바로 기록여부 확인 후 종료.
     const yesOrNo = confirm('한턴을 되돌리시겠습니까?');
@@ -229,12 +238,17 @@
     } else{
       login(`${$score.textContent}`);
     };
+  /*
+    lose_audio.currentTime = 0;
     lose_audio.play();
+  */
     $info.textContent = 'LOSE!';
     $info.style.color = 'red';
   }
 
   function complete(n){
+    end = 1;
+    congratulation_audio.play();
     alert('🎉🎉🎉\n축하합니다. 2048을 만들었습니다!\n🎉🎉🎉');
     login(n);
   }
@@ -250,21 +264,21 @@
 
   // $table -> $fragment -> $tr -> $td
   function startGame() {
-    const $fragment = document.createDocumentFragment();
-    [1, 2, 3, 4].forEach(function () {
-      const rowData = [];
-      data.push(rowData);
-      const $tr = document.createElement('tr');
-      [1, 2, 3, 4].forEach(() => {
-        rowData.push(0);
-        const $td = document.createElement('td');
-        $tr.appendChild($td);
+      const $fragment = document.createDocumentFragment();
+      [1, 2, 3, 4].forEach(function () {
+        const rowData = [];
+        data.push(rowData);
+        const $tr = document.createElement('tr');
+        [1, 2, 3, 4].forEach(() => {
+          rowData.push(0);
+          const $td = document.createElement('td');
+          $tr.appendChild($td);
+        });
+        $fragment.appendChild($tr);
       });
-      $fragment.appendChild($tr);
-    });
-    $table.appendChild($fragment);
-    put2ToRandomCell();
-    draw();
+      $table.appendChild($fragment);
+      put2ToRandomCell();
+      draw();
   }
 
   function put2ToRandomCell() {
@@ -282,22 +296,22 @@
   }
 
   function draw() {
-    data.forEach((rowData, i) => {
-      rowData.forEach((cellData, j) => {
-        const $target = $table.children[i].children[j];
-        if (cellData > 0) {
-          $target.textContent = cellData;
-          $target.className = 'color-' + cellData;
-        } else {
-          $target.textContent = '';
-          $target.className = '';
-        }
+      data.forEach((rowData, i) => {
+        rowData.forEach((cellData, j) => {
+          const $target = $table.children[i].children[j];
+          if (cellData > 0) {
+            $target.textContent = cellData;
+            $target.className = 'color-' + cellData;
+          } else {
+            $target.textContent = '';
+            $target.className = '';
+          }
+        });
       });
-    });
   }
 
   startGame();
-  /*
+/*
   data = [
      [32, 2, 4, 2],
      [64, 4, 8, 4],
@@ -305,7 +319,7 @@
      [32, 16, 64, 4],
   ];
   draw();
-  */
+*/
   function moveCells(direction) {
     history.push({
       table: JSON.parse(JSON.stringify(data)),
@@ -323,6 +337,8 @@
                 const score = parseInt($score.textContent);
                 $score.textContent = score + currentRow[currentRow.length - 1] * 2;
                 currentRow[currentRow.length - 1] *= -2;
+                only_move = 0;
+                added.currentTime = 0;
                 added.play();
               } else {
                 newData[i].push(cellData); 
@@ -349,6 +365,8 @@
                 const score = parseInt($score.textContent);
                 $score.textContent = score + currentRow[currentRow.length - 1] * 2;
                 currentRow[currentRow.length - 1] *= -2;
+                only_move = 0;
+                added.currentTime = 0;
                 added.play();
               } else {
                 newData[i].push(rowData[3 - j]);
@@ -375,6 +393,8 @@
                 const score = parseInt($score.textContent);
                 $score.textContent = score + currentRow[currentRow.length - 1] * 2;
                 currentRow[currentRow.length - 1] *= -2;
+                only_move = 0;
+                added.currentTime = 0;
                 added.play();
               } else {
                 newData[j].push(cellData);
@@ -401,6 +421,8 @@
                 const score = parseInt($score.textContent);
                 $score.textContent = score + currentRow[currentRow.length - 1] * 2;
                 currentRow[currentRow.length - 1] *= -2;
+                only_move = 0;
+                added.currentTime = 0;
                 added.play();
               } else {
                 newData[j].push(data[3 - i][j]);
@@ -429,26 +451,38 @@
     } else {
       put2ToRandomCell();
       draw();
-    }
-    if (only_move = 1) {
+    };
+    if (only_move == 1) {
+      move_audio.currentTime = 0.001;
       move_audio.play();
-    } else {
+    } else if (removedAllEventListener == 1) {
+      move_audio.currentTime = 0;
       only_move = 0;
-    }
+    } else {
+      only_move = 1;
+    };
   }
 
   function key(event){ // 키보드 이벤트 처리
     if (event.key === 'ArrowUp') {
-      moveCells('up');
+      if (removedAllEventListener == 0) {
+        moveCells('up');
+      };
     } else if (event.key === 'ArrowDown') {
-      moveCells('down');
+      if (removedAllEventListener == 0) {
+        moveCells('down');
+      };
     } else if (event.key === 'ArrowLeft') {
-      moveCells('left');
+      if (removedAllEventListener == 0) {
+        moveCells('left');
+      };
     } else if (event.key === 'ArrowRight') {
-      moveCells('right');
+      if (removedAllEventListener == 0) {
+        moveCells('right');
+      };
     }
   };
-
+    
   window.addEventListener('keyup', key); // 키보드 키 누른뒤 손땠을때 기준으로 이벤트 리스너 추가
 
   let startCoord;
@@ -461,13 +495,21 @@
     const diffX = endCoord[0] - startCoord[0];
     const diffY = endCoord[1] - startCoord[1];
     if (diffX < 0 && Math.abs(diffX) > Math.abs(diffY)) {
-      moveCells('left');
+      if (removedAllEventListener == 0){
+        moveCells('left');
+      };
     } else if (diffX > 0 && Math.abs(diffX) > Math.abs(diffY)) {
-      moveCells('right');
+      if (removedAllEventListener == 0){
+        moveCells('right');
+      };
     } else if (diffY > 0 && Math.abs(diffX) <= Math.abs(diffY)) {
-      moveCells('down');
+      if (removedAllEventListener == 0){
+        moveCells('down');
+      };
     } else if (diffY < 0 && Math.abs(diffX) <= Math.abs(diffY)) {
-      moveCells('up');
+      if (removedAllEventListener == 0){
+        moveCells('up');
+      };
     } 
   };
 
@@ -477,25 +519,33 @@
   
   function touchend(event){ // 터치 종료 위치 기록및 차이점으로 cell이동 여부 및 이동 방향 결정
     const endCoord = [event.changedTouches[0].clientX, event.changedTouches[0].clientY];
-    const diffX = endCoord[0] - startCoord[0];
-    const diffY = endCoord[1] - startCoord[1];
-    if (diffX < 0 && Math.abs(diffX) > Math.abs(diffY)) {
-      moveCells('left');
-    } else if (diffX > 0 && Math.abs(diffX) > Math.abs(diffY)) {
-      moveCells('right');
-    } else if (diffY > 0 && Math.abs(diffX) <= Math.abs(diffY)) {
-      moveCells('down');
-    } else if (diffY < 0 && Math.abs(diffX) <= Math.abs(diffY)) {
-      moveCells('up');
+    const diffX_touch = endCoord[0] - startCoord[0];
+    const diffY_touch = endCoord[1] - startCoord[1];
+    if (diffX_touch < 0 && Math.abs(diffX_touch) > Math.abs(diffY_touch)) {
+      if (removedAllEventListener == 0){
+        moveCells('left');
+      };
+    } else if (diffX_touch > 0 && Math.abs(diffX_touch) > Math.abs(diffY_touch)) {
+      if (removedAllEventListener == 0){
+        moveCells('right');
+      };
+    } else if (diffY_touch > 0 && Math.abs(diffX_touch) <= Math.abs(diffY_touch)) {
+      if (removedAllEventListener == 0){
+        moveCells('down');
+      };
+    } else if (diffY_touch < 0 && Math.abs(diffX_touch) <= Math.abs(diffY_touch)) {
+      if (removedAllEventListener == 0){
+        moveCells('up');
+      };
     }
   };
-  window.addEventListener('mousedown', mousedown); // 마우스 버튼 입력 시작 감지
+  window.addEventListener('mousedown', mousedown, false); // 마우스 버튼 입력 시작 감지
 
-  window.addEventListener('mouseup', mouseup); // 마우스 버튼 입력 중지 감지
+  window.addEventListener('mouseup', mouseup, false); // 마우스 버튼 입력 중지 감지
 
-  $table.addEventListener('touchstart', touchstart); // 터치 시작 감지
+  $table.addEventListener('touchstart', touchstart, false); // 터치 시작 감지
 
-  $table.addEventListener('touchend', touchend);
+  $table.addEventListener('touchend', touchend, false);
 </script>
 </body>
 </html>
