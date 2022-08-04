@@ -71,7 +71,7 @@
   let how_many_temp;
   let data = [];
   const history = [];
-
+  
   function removeAllEventListener(){
     window.removeEventListener('keyup', key, false); // 패배시 이벤트 리스너 제거.
     window.removeEventListener('mousedown', mousedown, false); // 패배시 이벤트 리스너 제거.
@@ -230,13 +230,22 @@
     end = 1;
     lose = 1;
     alert(`패배했습니다... ${$score.textContent}점`);
-    if(n == 'manual') login(`${$score.textContent}`); // 수동으로 포기 할시 바로 기록여부 확인 후 종료.
+    // if(n == 'manual') login(`${$score.textContent}`); // 수동으로 포기 할시 바로 기록여부 확인 후 종료.
     const yesOrNo = confirm('한턴을 되돌리시겠습니까?');
     console.log('패배\n\n되돌리기 = ' + yesOrNo);
     if(yesOrNo){
       restore(n);
     } else{
-      login(`${$score.textContent}`);
+      let url = new URL(window.location.href);
+      console.log(url)
+      url = url.toString();
+      const splited = url.split('2048.html');
+      url = splited + '2048_Result.html';
+      console.log(url)
+      // var child = frames[0];
+      window.postMessage(`${$score.textContent},0`, url);
+      //location.replace(url)
+      // login(`${$score.textContent}`);
     };
   /*
     lose_audio.currentTime = 0;
@@ -250,7 +259,14 @@
     end = 1;
     congratulation_audio.play();
     alert('🎉🎉🎉\n축하합니다. 2048을 만들었습니다!\n🎉🎉🎉');
-    login(n);
+    // login(n);
+    let url = new URL(window.location.href);
+    url = url.toString();
+    const splited = url.split('2048.html');
+    url = splited + '2048_Result.html';
+    // var child = frames[0];
+    window.postMessage(`${$score.textContent},1`, url);
+    location.replace(url)
   }
 
   $set_fail.addEventListener('click', () => {

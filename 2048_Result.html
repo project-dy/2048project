@@ -44,17 +44,162 @@
 <body>
 <table id="table"></table>
 <div>
-  <h1 id="NotAllow">현재 브라우저의 설정 구획에서 javascript사용을 허용하지 않고있습네다만, 현재 이 창을 정상적으로 렬수 없습니다.</h1>
+  <h1 id="NotAllow">현재 브라우저의 설정 구획에서 javascript사용을 허용하지 않고있거나 봉사기의 작동이 멈추었을수 있습네다. 따라서 현재 이 창을 정상적으로 렬수 없습니다.</h1>
 </div>
 <script>
   const congratulation_audio = new Audio('congratulation.wav');
   const lose_audio = new Audio('2048Lose_Mastering.wav');
   const $NotAllow = document.getElementById('NotAllow');
   $NotAllow.textContent = '';
+  /*
   const url = new URL(window.location.href);
   const urlParams = url.searchParams;
-  const score = urlParams.get('score')
-  document.write(score+'점 으로 패배!')
+  const score = urlParams.get('score');
+  const win = urlParams.get('win');
+  */
+  let score_with_win = undefined;
+  let win = undefined;
+  let score = undefined;
+
+  function receiveBeginningMessage(event) {
+    let url = new URL(window.location.href);
+    url = url.toString();
+    const splited = url.split('2048_Result.html');
+    url = splited + '2048.html';
+    if (event.origin !== url) {
+      return;
+    }
+    score_with_win = event.data;
+    console.log(score_with_win); // A 윈도우에서 보낸 메시지
+    win = url.split(',');
+    score = score_with_win;
+    score_with_win = null;
+    event.source.postMessage("completed!");
+  }
+  window.addEventListener("message", receiveBeginningMessage);
+
+  if (win = 0) { // Lose
+    document.write(score+'점 으로 패배!');
+    lose_audio.play();
+  } else if (win = 1) {
+    document.write(score+'점 으로 승리!');
+    congratulation_audio.play();
+  }
+
+  function record(n, name, pw){
+    console.log('기록 시작');
+    if(name === null || pw === null) {
+      alert('기록이 취소되었습니다.');
+      console.log('취소!');
+      return;
+    };
+    if(!window.localStorage.getItem(pw)) {
+      console.log('첫번째 기록!');
+      window.localStorage.setItem(pw,n);
+      console.log('기록 완료!');
+    } else{
+      console.log('이전의 기록 발견!');
+      const prev = window.localStorage.getItem(pw);
+      if(prev < n){
+        window.localStorage.setItem(pw,n);
+        console.log('최고기록 달성!');
+        alert(n+'점\n최고기록 달성!\n축하드립니다!!🎉🎉');
+        console.log('완료');
+      } else if(prev > n){
+        const prev_temp = prev-n;
+        alert(prev_temp+'점 차이로 아쉽게 실패!');
+        const want_record = confirm('기록을 갱신 하시겠습니까?');
+        if(want_record){
+          if(confirm('기존기록은 삭제 됩니다.\n그래도 하시겠습니까?')){
+            window.localStorage.setItem(pw,n);
+            console.log('완료')
+          } else{
+            console.log('cancled');
+          };
+          return;
+        } else{
+          return;
+        };
+      } else{
+        console.log('동점!')
+        alert(n+'점으로 동점입니다.')
+      };
+    };
+  }
+
+  function login(n){
+    let restart_function = 0
+    console.log(n+'점을 기록.');
+    const name = prompt('당신의 닉네임을 작성해주세요.');
+    if(name == null) {
+      alert('기록이 취소되었습니다.');
+      return;
+    };
+    const pw = prompt('비밀번호를 입력해주세요');
+    if(pw == null) {
+      alert('기록이 취소되었습니다.');
+      return;
+    };
+    console.log(pw);
+    if(name){
+      console.log('닉네임: ' + name);
+      let name_list = false;
+      if(window.localStorage.getItem(name)){
+        name_list = window.localStorage.getItem(name);
+        console.log(String(name_list)+String(pw));
+        if(name_list == true){
+          console.log('가입필요.');
+          pw1 == prompt('신규 가입중...\n비밀번호를 다시 한번 입력해주세요');
+          if(pw == pw1){
+            window.localStorage.setItem(name, pw);
+            console.log('완료');
+          } else{
+            console.log('비밀번호 틀림');
+            alert('비밀번호가 틀렸습니다.');
+            restart_function = 1
+            // login(n);
+          };
+        } else if(name_list == pw){
+          console.log('기록 되어있는 닉네임.');
+        } else{
+          console.log('비밀번호 틀림');
+          alert('비밀번호가 틀렸습니다.');
+          restart_function = 1
+          // login(n);
+        };
+      } /*else if(pw != pw1){
+        console.log('비밀번호 틀림');
+        alert('비밀번호가 틀렸습니다.');
+        login(n);
+      }*/ else {
+        console.log('신규');
+        const pw1 = prompt('신규 가입중...\n비밀번호를 입력해주세요');
+        if(pw == pw1){
+         window.localStorage.setItem(name, pw);
+         console.log('완료');
+         alert('가입이 완료되었습니다. 본 계정은 본 기기에 한하여 사용이 가능합니다.')
+        } else{
+          console.log('비밀번호 틀림');
+          alert('비밀번호가 틀렸습니다.');
+          restart_function = 1
+        }
+      };
+      if(restart_function == 1){
+        login(n);
+      }
+      else{
+        record(n, name, pw);
+      };
+      // return;
+    } else{
+      return;
+    }
+    if(lose == 1){
+        removeAllEventListener;
+    };
+  }
+
+  login(score);
 </script>
 </body>
 </html>
