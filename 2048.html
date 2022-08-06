@@ -236,16 +236,23 @@
     if(yesOrNo){
       restore(n);
     } else{
+      /*
       let url = new URL(window.location.href);
       console.log(url)
       url = url.toString();
-      const splited = url.split('2048.html');
+      // let temp = 
+      let splited = url.substr(0, -9);
       url = splited + '2048_Result.html';
       console.log(url)
       // var child = frames[0];
-      window.postMessage(`${$score.textContent},0`, url);
-      //location.replace(url)
+      window.open('http://127.0.0.1:5500/2048_Result.html').postMessage($score.textContent, 'http://127.0.0.1:5500/2048_Result.html');
+      window.open("/2048_Result.html");
+      window.close();
+      // location.replace(url)
       // login(`${$score.textContent}`);
+      */
+      window.opener.postMessage({score:$score.textContent,win:0}, '*')
+      window.close();
     };
   /*
     lose_audio.currentTime = 0;
@@ -260,13 +267,8 @@
     congratulation_audio.play();
     alert('🎉🎉🎉\n축하합니다. 2048을 만들었습니다!\n🎉🎉🎉');
     // login(n);
-    let url = new URL(window.location.href);
-    url = url.toString();
-    const splited = url.split('2048.html');
-    url = splited + '2048_Result.html';
-    // var child = frames[0];
-    window.postMessage(`${$score.textContent},1`, url);
-    location.replace(url)
+    window.opener.postMessage({score:$score.textContent,win:1}, '*')
+    window.close();
   }
 
   $set_fail.addEventListener('click', () => {
