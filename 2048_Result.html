@@ -66,13 +66,17 @@
   if (window.location.href == 'http://127.0.0.1:5500/2048_Result.html'){
     test_window = window.open('http://127.0.0.1:5500/popup.html');
   } else if (window.location.href == 'https://project-dy.github.io/project-dy/2048_Result.html') {
-    test_window = window.open('https://project-dy.github.io/project-dy/2048.html')
+    test_window = window.open('https://project-dy.github.io/project-dy/popup.html')
   };
   let test = undefined;
   if (!test_window) {
     $info.textContent = '팝업차단을 해제후 새로고침해주세요.'
   } else {
-    game_window = window.open('http://127.0.0.1:5500/2048.html');
+    if (window.location.href == 'http://127.0.0.1:5500/2048_Result.html'){
+      game_window = window.open('http://127.0.0.1:5500/popup.html');
+    } else if (window.location.href == 'https://project-dy.github.io/project-dy/2048_Result.html') {
+      game_window = window.open('https://project-dy.github.io/project-dy/popup.html')
+    };
   };
   const receiveMessage = async (e) => {
     if(e.data.hasOwnProperty('score')){
