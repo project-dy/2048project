@@ -225,41 +225,65 @@
       console.log('완료!')
     }
   }
-
+let infinity_mode = 0
   function set_fail(n) {
-    end = 1;
-    lose = 1;
-    alert(`패배했습니다... ${$score.textContent}점`);
-    // if(n == 'manual') login(`${$score.textContent}`); // 수동으로 포기 할시 바로 기록여부 확인 후 종료.
-    const yesOrNo = confirm('한턴을 되돌리시겠습니까?');
-    console.log('패배\n\n되돌리기 = ' + yesOrNo);
-    if(yesOrNo){
-      restore(n);
-    } else{
-      /*
-      let url = new URL(window.location.href);
-      console.log(url)
-      url = url.toString();
-      // let temp = 
-      let splited = url.substr(0, -9);
-      url = splited + '2048_Result.html';
-      console.log(url)
-      // var child = frames[0];
-      window.open('http://127.0.0.1:5500/2048_Result.html').postMessage($score.textContent, 'http://127.0.0.1:5500/2048_Result.html');
-      window.open("/2048_Result.html");
-      window.close();
-      // location.replace(url)
-      // login(`${$score.textContent}`);
-      */
-      window.opener.postMessage({score:$score.textContent,win:0}, '*')
-      window.close();
-    };
-  /*
-    lose_audio.currentTime = 0;
-    lose_audio.play();
-  */
-    $info.textContent = 'LOSE!';
-    $info.style.color = 'red';
+    if (infinity_mode != 1){
+      end = 1;
+      lose = 1;
+      alert(`패배했습니다... ${$score.textContent}점`);
+      // if(n == 'manual') login(`${$score.textContent}`); // 수동으로 포기 할시 바로 기록여부 확인 후 종료.
+      const yesOrNo = confirm('한턴을 되돌리시겠습니까?');
+      console.log('패배\n\n되돌리기 = ' + yesOrNo);
+      if(yesOrNo){
+        restore(n);
+      } else{
+        /*
+        let url = new URL(window.location.href);
+        console.log(url)
+        url = url.toString();
+        // let temp = 
+        let splited = url.substr(0, -9);
+        url = splited + '2048_Result.html';
+        console.log(url)
+        // var child = frames[0];
+        window.open('http://127.0.0.1:5500/2048_Result.html').postMessage($score.textContent, 'http://127.0.0.1:5500/2048_Result.html');
+        window.open("/2048_Result.html");
+        window.close();
+        // location.replace(url)
+        // login(`${$score.textContent}`);
+        */
+        try {
+          window.opener.postMessage({score:$score.textContent,win:0}, '*')
+          window.close();
+        } catch (error) {
+          if (infinity_mode == 0) {
+            if (confirm('무한모드를 활성화 하시겠습니까?')){
+              infinity_mode = 1;
+              $info.textContent = 'infinity mode enabled.';
+              $info.style.color = 'blue';
+            } else {
+              infinity_mode = -1;
+            };
+          };
+        };
+      }
+        /*
+          lose_audio.currentTime = 0;
+          lose_audio.play();
+        $info.textContent = 'LOSE!';
+        $info.style.color = 'red';
+        */
+    } else {
+      if (infinity_mode == 0) {
+        if (confirm('무한모드를 활성화 하시겠습니까?')){
+          infinity_mode = 1;
+          $info.textContent = 'infinity mode enabled.';
+          $info.style.color = 'blue';
+        } else {
+          infinity_mode = -1;
+        };
+      }
+    }
   }
 
   function complete(n){
