@@ -85,7 +85,8 @@
       console.log(e.data.win);
       win = e.data.win;
       console.log(win);
-      startrecord(parseInt(e.data.score));
+      // startrecord(parseInt(e.data.score));
+      startrecord(e.data.score);
     };
   };
   window.addEventListener("message", receiveMessage, false);
