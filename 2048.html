@@ -212,7 +212,8 @@
         console.log('Notifaction was completed with Pop Up Message.');
         const confirm_record = confirm('점수를 기록 하시겠습니까?');
         if(confirm_record){
-          login(`${$score.textContent}`);
+          // login(`${$score.textContent}`);
+          set_fail();
         } else{
           return;
         };
