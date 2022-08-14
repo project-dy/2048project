@@ -262,7 +262,7 @@ let infinity_mode = 0
         */
         try {
           window.opener.postMessage({score:$score.textContent,win:0}, '*')
-          window.close();
+          close();
         } catch (error) {
           if (infinity_mode == 0) {
             if (confirm('무한모드를 활성화 하시겠습니까?')){
@@ -300,7 +300,7 @@ let infinity_mode = 0
     alert('🎉🎉🎉\n축하합니다. 2048을 만들었습니다!\n🎉🎉🎉');
     // login(n);
     window.opener.postMessage({score:$score.textContent,win:1}, '*')
-    window.close();
+    close();
   }
 
   $set_fail.addEventListener('click', () => {
