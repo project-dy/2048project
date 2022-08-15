@@ -92,6 +92,7 @@
   window.addEventListener("message", receiveMessage, false);
 
   function startrecord(score) {
+    login(score);
     if (win == 0) { // Lose
       document.write(score+'점 으로 패배!');
       try {
@@ -107,7 +108,6 @@
         console.log(`음악 재생 불가. ERROR 내용:${e}`);
       };
     };
-    login(score);
   };
 
   let restart_function = 0
