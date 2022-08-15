@@ -86,38 +86,34 @@
       win = e.data.win;
       console.log(win);
       // startrecord(parseInt(e.data.score));
-      startrecord(e.data.score);
+      score = e.data.score;
+      startrecord(score);
     };
   };
   window.addEventListener("message", receiveMessage, false);
 
-  function startrecord(score) {
-    login(score);
-    /*
+  function startrecord(n) {
     if (win == 0) { // Lose
-      document.write(score+'점 으로 패배!');
-      try {
+      document.write(n+'점 으로 패배!');
+      /*try {
         lose_audio.play();
       } catch(e) {
         console.log(`음악 재생 불가. ERROR 내용:${e}`);
-      };
+      };*/
     } else if (win == 1) {
-      document.write(score+'점 으로 승리!');
-      try {
+      document.write(n+'점 으로 승리!');
+      /*try {
         congratulation_audio.play();
       } catch(e) {
         console.log(`음악 재생 불가. ERROR 내용:${e}`);
-      };
+      };*/
     };
-    */
+    login(n);
   };
 
   let restart_function = 0
   function login(n){
     console.log(n+'점을 기록.');
-    if(game_window.location.href != true){
-      return;
-    };
     let game_window_close = 0
     setTimeout(() => {
       const name = prompt('당신의 닉네임을 작성해주세요.');
