@@ -92,6 +92,49 @@
   };
   window.addEventListener("message", receiveMessage, false);
 
+  function start_encrypte(v){
+    console.log('encrypte start.');
+    encrypted = CryptoJS.SHA256(v).toString();
+  };
+  let encrypted_login;
+  let encrypted_login_id;
+  let encrypted_login_pw;
+  let encrypted_record;
+
+  function cookie_login(n,v){
+    n = start_encrypte(n);
+    encrypted_login_id = n;
+    v = start_encrypte(v);
+    encrypted_login_pw = v;
+    encrypted_login = start_encrypte(n+v);
+  };
+
+  function cookie_record(n,v){
+    n = start_encrypte(n);
+    v = start_encrypte(v);
+    encrypted_record = start_encrypte(n+v);
+  };
+  let cookie_temp_login;
+  let cookie_temp_record;
+  function cookie(o,p,n,v){ // o=작업, p=조회와 작성 구분, n=name, v=value
+    if(o == 'login'){
+      cookie_login(n,v);
+      // cookie_temp_login = 1;
+      if(p == 'c' && window.localStorage.getItem(encrypted_login_id) == encrypted_login){ // 체크
+        cookie_temp_login = true;
+      } else if(p == 'w'){ // 작성
+        window.localStorage.getItem(encrypted_login_id, encrypted_login);
+      };
+    } else if(o == 'record'){
+      cookie_record(n,v);
+      // cookie_temp_record = 1;
+      if(p == 'c' && window.localStorage.getItem(encrypted_login) == v){ // 체크
+        cookie_temp_login = true;
+      } else if(p == 'w'){ // 작성
+        window.localStorage.getItem(encrypted_login, encrypted_record);
+      };
+    };
+  }
   function startrecord(n) {
     if (win == 0) { // Lose
       document.write(n+'점 으로 패배!');
@@ -137,17 +180,21 @@
             console.log('가입필요.');
             pw1 == prompt('신규 가입중...\n비밀번호를 다시 한번 입력해주세요');
             if(pw == pw1){
-              window.localStorage.setItem(name, pw);
-              console.log('완료');
-            } else if (pw1 == window.localStorage.getItem(pw)) {
-              alert('사용 불가능한 비밀번호입니다.');
-              restart_function = 1;
-              return;
+              if (window.localStorage.getItem(pw1) == true) {
+                alert('사용 불가능한 비밀번호입니다.');
+                restart_function = 1;
+                return;
+              } else{
+                window.localStorage.setItem(name, pw);
+                console.log('완료');
+              };
             } else{
               console.log('비밀번호 틀림');
               alert('비밀번호가 틀렸습니다.');
-              restart_function = 1
-              return;
+              restart_function = 1;
+              if(true){
+                return;
+              };
             };
           } else if(name_list == pw){
             console.log('기록 되어있는 닉네임.');
@@ -160,15 +207,19 @@
         } else {
           console.log('신규');
           const pw1 = prompt('신규 가입중...\n비밀번호를 입력해주세요');
-          if(pw == pw1){
-          window.localStorage.setItem(name, pw);
-          console.log('완료');
-          alert('가입이 완료되었습니다. 본 계정은 본 기기에 한하여 사용이 가능합니다.')
+          if(window.localStorage.getItem(pw1) == true){
+            alert('사용 불가능한 비밀번호입니다.');
+            restart_function = 1;
+            return;
+          } else if(pw == pw1){
+            window.localStorage.setItem(name, pw);
+            console.log('완료');
+            alert('가입이 완료되었습니다. 본 계정은 본 기기에 한하여 사용이 가능합니다.')
           } else{
             console.log('비밀번호 틀림');
             alert('비밀번호가 틀렸습니다.');
             restart_function = 1;
-          }
+          };
         };
         if(restart_function == 1){
           restart_function = 0;
@@ -180,7 +231,11 @@
         // return;
       } else{
         return;
-      }
+      };
+      if(restart_function == 1){
+        restart_function = 0;
+        login(n);
+      };
     }, 100);;
   }
   /*if(restart_function == 1){
