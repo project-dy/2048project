@@ -46,6 +46,8 @@
 <div>
   <h1 id="info">현재 브라우저의 설정 구획에서 javascript사용을 허용하지 않고있거나 봉사기의 작동이 멈추었을수 있습네다. 따라서 현재 이 창을 정상적으로 렬수 없습니다.</h1>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/core.min.js" integrity="sha512-t8vdA86yKUE154D1VlNn78JbDkjv3HxdK/0MJDMBUXUjshuzRgET0ERp/0MAgYS+8YD9YmFwnz6+FWLz1gRZaw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/sha256.min.js" integrity="sha512-fv28nWHTcWfoN3KBd2fs+YWsirQ+L0b/iIRS7HcNDPSAwxy6oSjRrYjQ+OtJoJz0wUKsVcPYgwcZzK04KfHD0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script>
   const congratulation_audio = new Audio('congratulation.wav');
   const lose_audio = new Audio('2048Lose_Mastering.wav');
@@ -92,9 +94,15 @@
   };
   window.addEventListener("message", receiveMessage, false);
 
+  let encrypted;
+
   function start_encrypte(v){
     console.log('encrypte start.');
-    encrypted = CryptoJS.SHA256(v).toString();
+    encrypted = undefined;
+    console.log('reset \'encrypted\(var\)\'.');
+    encrypted = CryptoJS.SHA256(v);
+    encrypted = String(encrypted);
+    console.log(encrypted);
   };
   let encrypted_login;
   let encrypted_login_id;
@@ -102,17 +110,26 @@
   let encrypted_record;
 
   function cookie_login(n,v){
-    n = start_encrypte(n);
+    start_encrypte(n);
+    n = encrypted;
     encrypted_login_id = n;
-    v = start_encrypte(v);
+    start_encrypte(v);
+    v = encrypted;
     encrypted_login_pw = v;
-    encrypted_login = start_encrypte(n+v);
+    start_encrypte(n+v);
+    encrypted_login = encrypted;
+    console.log(encrypted_login);
+    console.log(encrypted_login_id);
+    console.log(encrypted_login_pw);
   };
 
   function cookie_record(n,v){
-    n = start_encrypte(n);
+    start_encrypte(n);
+    n = encrypted;
     v = start_encrypte(v);
-    encrypted_record = start_encrypte(n+v);
+    start_encrypte(n+v);
+    encrypted_record = encrypted;
+    console.log(encrypted_record);
   };
   let cookie_temp_login;
   let cookie_temp_record;
@@ -123,15 +140,23 @@
       if(p == 'c' && window.localStorage.getItem(encrypted_login_id) == encrypted_login){ // 체크
         cookie_temp_login = true;
       } else if(p == 'w'){ // 작성
-        window.localStorage.getItem(encrypted_login_id, encrypted_login);
+        window.localStorage.setItem(encrypted_login_id, encrypted_login);
       };
     } else if(o == 'record'){
       cookie_record(n,v);
       // cookie_temp_record = 1;
-      if(p == 'c' && window.localStorage.getItem(encrypted_login) == v){ // 체크
-        cookie_temp_login = true;
+      if(p == 'c' && window.localStorage.getItem(encrypted_record) == true){ // 체크
+        cookie_temp_record = window.localStorage.getItem(encrypted_record);
+        // cookie_record(encrypted_login,cookie_temp_record);
+        if(window.localStorage.getItem(name) == encrypted_record){
+          cookie_temp_record = true;
+        } else{
+          cookie_temp_record = false;
+        };
       } else if(p == 'w'){ // 작성
-        window.localStorage.getItem(encrypted_login, encrypted_record);
+        cookie_record(encrypted_login,score);
+        window.localStorage.setItem(encrypted_record,score);
+        window.localStorage.setItem(name,encrypted_record);
       };
     };
   }
@@ -185,7 +210,8 @@
                 restart_function = 1;
                 return;
               } else{
-                window.localStorage.setItem(name, pw);
+                // window.localStorage.setItem(name, pw);
+                cookie('login','w',name,pw);
                 console.log('완료');
               };
             } else{
@@ -212,7 +238,8 @@
             restart_function = 1;
             return;
           } else if(pw == pw1){
-            window.localStorage.setItem(name, pw);
+            // window.localStorage.setItem(name, pw);
+            cookie('login','w',name, pw);
             console.log('완료');
             alert('가입이 완료되었습니다. 본 계정은 본 기기에 한하여 사용이 가능합니다.')
           } else{
@@ -251,13 +278,15 @@
     };
     if(!window.localStorage.getItem(pw)) {
       console.log('첫번째 기록!');
-      window.localStorage.setItem(pw,n);
+      // window.localStorage.setItem(pw,n);
+      cookie('record','w',pw,n);
       console.log('기록 완료!');
     } else{
       console.log('이전의 기록 발견!');
       const prev = window.localStorage.getItem(pw);
       if(prev < n){
-        window.localStorage.setItem(pw,n);
+        // window.localStorage.setItem(pw,n);
+        cookie('record','w',pw,n);
         console.log('최고기록 달성!');
         alert(n+'점\n최고기록 달성!\n축하드립니다!!🎉🎉');
         console.log('완료');
@@ -267,7 +296,8 @@
         const want_record = confirm('기록을 갱신 하시겠습니까?');
         if(want_record){
           if(confirm('기존기록은 삭제 됩니다.\n그래도 하시겠습니까?')){
-            window.localStorage.setItem(pw,n);
+            // window.localStorage.setItem(pw,n);
+            cookie('record','w',pw,n);
             console.log('완료')
           } else{
             console.log('cancled');
