@@ -133,12 +133,13 @@
   };
   let cookie_temp_login;
   let cookie_temp_record;
-  function cookie(o,p,n,v){ // o=작업, p=조회와 작성 구분, n=name, v=value
+  function cookie(o,p,n,v){ // o=작업, p=조회와 작성 구분, n=name, v=value(login시 pw, record시 점수)
     if(o == 'login'){
       cookie_login(n,v);
       // cookie_temp_login = 1;
       if(p == 'c' && window.localStorage.getItem(encrypted_login_id) == encrypted_login){ // 체크
         cookie_temp_login = true;
+        console.log('true');
       } else if(p == 'w'){ // 작성
         window.localStorage.setItem(encrypted_login_id, encrypted_login);
       };
@@ -150,8 +151,10 @@
         // cookie_record(encrypted_login,cookie_temp_record);
         if(window.localStorage.getItem(name) == encrypted_record){
           cookie_temp_record = true;
+          console.log('true');
         } else{
           cookie_temp_record = false;
+          console.log('true');
         };
       } else if(p == 'w'){ // 작성
         cookie_record(encrypted_login,score);
@@ -178,34 +181,58 @@
     };
     login(n);
   };
+  let name;
+  let pw;
+  let pw1;
 
   let restart_function = 0
   function login(n){
     console.log(n+'점을 기록.');
     let game_window_close = 0
     setTimeout(() => {
-      const name = prompt('당신의 닉네임을 작성해주세요.');
+      // let input_data_empty = 0;
+      name = prompt('당신의 닉네임을 작성해주세요.');
       if(name == null) {
         alert('기록이 취소되었습니다.');
         return;
+      } else if(name === '') {
+        login(n);
+        // input_data_empty = 1;
+        return;
       };
-      const pw = prompt('비밀번호를 입력해주세요');
+      pw = prompt('비밀번호를 입력해주세요');
       if(pw == null) {
         alert('기록이 취소되었습니다.');
         return;
+      } else if(pw === '') {
+        login(n);
+        // input_data_empty = 1;
+        return;
       };
+      /*if(input_data_empty == 1) {
+        console.log('empty data');
+        return;
+      };*/
       console.log(pw);
       if(name){
         console.log('닉네임: ' + name);
         let name_list = false;
-        if(window.localStorage.getItem(name)){
-          name_list = window.localStorage.getItem(name);
-          console.log(String(name_list)+String(pw));
+        start_encrypte(name);
+        let encrypted_name = encrypted;
+        start_encrypte(pw);
+        let encrypted_pw = encrypted;
+        start_encrypte(name+pw);
+        let encrypted_id = encrypted;
+        cookie('login','c',name,pw);
+        if(window.localStorage.getItem(encrypted_name)){
+          name_list = window.localStorage.getItem(encrypted_name);
+          console.log(name_list+pw);
+          console.log(name_list+encrypted_pw);
           if(name_list == true){
             console.log('가입필요.');
             pw1 == prompt('신규 가입중...\n비밀번호를 다시 한번 입력해주세요');
             if(pw == pw1){
-              if (window.localStorage.getItem(pw1) == true) {
+              /*if (window.localStorage.getItem(pw1) == true) {
                 alert('사용 불가능한 비밀번호입니다.');
                 restart_function = 1;
                 return;
@@ -213,7 +240,9 @@
                 // window.localStorage.setItem(name, pw);
                 cookie('login','w',name,pw);
                 console.log('완료');
-              };
+              };*/
+              cookie('login','w',name,pw);
+              console.log('완료');
             } else{
               console.log('비밀번호 틀림');
               alert('비밀번호가 틀렸습니다.');
@@ -222,7 +251,7 @@
                 return;
               };
             };
-          } else if(name_list == pw){
+          } else if(window.localStorage.getItem(encrypted_login_id) == encrypted_login){
             console.log('기록 되어있는 닉네임.');
           } else{
             console.log('비밀번호 틀림');
@@ -232,14 +261,19 @@
           };
         } else {
           console.log('신규');
-          const pw1 = prompt('신규 가입중...\n비밀번호를 입력해주세요');
-          if(window.localStorage.getItem(pw1) == true){
+          pw1 = prompt('신규 가입중...\n비밀번호를 입력해주세요');
+          start_encrypte(pw1);
+          let encrypted_temp1 = encrypted;
+          start_encrypte(pw);
+          let encrypted_temp2 = encrypted;
+          console.log(`${encrypted_temp1}, ${encrypted_temp2}`);
+          if(window.localStorage.getItem(encrypted_temp1) == true){
             alert('사용 불가능한 비밀번호입니다.');
             restart_function = 1;
             return;
-          } else if(pw == pw1){
+          } else if(encrypted_temp1 == encrypted_temp2){
             // window.localStorage.setItem(name, pw);
-            cookie('login','w',name, pw);
+            cookie('login', 'w', name, pw);
             console.log('완료');
             alert('가입이 완료되었습니다. 본 계정은 본 기기에 한하여 사용이 가능합니다.')
           } else{
@@ -276,14 +310,19 @@
       console.log('취소!');
       return;
     };
-    if(!window.localStorage.getItem(pw)) {
+    // start_encrypte(pw);
+    if(!window.localStorage.getItem(encrypted)) {
       console.log('첫번째 기록!');
       // window.localStorage.setItem(pw,n);
+      start_encrypte(pw);
       cookie('record','w',pw,n);
       console.log('기록 완료!');
     } else{
       console.log('이전의 기록 발견!');
-      const prev = window.localStorage.getItem(pw);
+      start_encrypte(pw);
+      cookie('login','c',name,pw);
+      cookie_record(encrypted_login,score);
+      const prev = window.localStorage.getItem(encrypted_record);
       if(prev < n){
         // window.localStorage.setItem(pw,n);
         cookie('record','w',pw,n);
