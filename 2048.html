@@ -51,7 +51,9 @@
   <button id="record">기록하기</button>
   <span id="information"></span>
   <div id="NotWorkGroup"></div>
-  <br>&nbsp;&nbsp;&nbsp;&nbsp;<button id="btnup">⇧</button><br><button id="btnlt">⇦</button><button id="btndn">⇩</button><button id="btnrt">⇨</button></div>
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button id="btnup">⇧</button><br><button id="btnlt">⇦</button><button id="btndn">⇩</button><button id="btnrt">⇨</button></div>
+  <a id="target" style="display: none"></a>
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 <script>
   let end = 0;
   let lose = 0;
@@ -86,6 +88,36 @@
     $table.removeEventListener('touchstart', touchstart, false); // 패배시 이벤트 리스너 제거.
     $table.removeEventListener('touchend', touchend, false); // 패배시 이벤트 리스너 제거.
     removedAllEventListener = 1;
+  };
+
+  let el;
+
+  function capture(v){
+    html2canvas(document.body).then(function(canvas) {
+      if(confirm('스크린샷을 내려 받을까요?')){
+        el = document.getElementById("target");
+        el.href = canvas.toDataURL("image/jpeg");
+        el.download = '2048_complete.jpg';
+        el.click();
+        setTimeout(() => {
+          if(v == 1){
+            window.opener.postMessage({score:$score.textContent,win:1}, '*');
+            close();
+          } else if(v == 0){
+            window.opener.postMessage({score:$score.textContent,win:0}, '*');
+            close();
+          };
+        },1000);
+      } else {
+        if(v == 1){
+          window.opener.postMessage({score:$score.textContent,win:1}, '*');
+          close();
+        } else if(v == 0){
+          window.opener.postMessage({score:$score.textContent,win:0}, '*');
+          close();
+        };
+      };
+    });
   };
 
   function record(n, name, pw){
@@ -261,9 +293,11 @@ let infinity_mode = 0
         // login(`${$score.textContent}`);
         */
         try {
-          window.opener.postMessage({score:$score.textContent,win:0}, '*')
-          close();
+          /*window.opener.postMessage({score:$score.textContent,win:0}, '*');
+          close();*/
+          capture(0);
         } catch (error) {
+          console.log(error);
           if (infinity_mode == 0) {
             if (confirm('무한모드를 활성화 하시겠습니까?')){
               infinity_mode = 1;
@@ -298,9 +332,14 @@ let infinity_mode = 0
     end = 1;
     congratulation_audio.play();
     alert('🎉🎉🎉\n축하합니다. 2048을 만들었습니다!\n🎉🎉🎉');
+    /*if(confirm('스크린샷을 저장 하시겠습니까?')){
+      capture(1);
+    } else{
+      window.opener.postMessage({score:$score.textContent,win:1}, '*')
+      close();
+    };*/
+    capture(1);
     // login(n);
-    window.opener.postMessage({score:$score.textContent,win:1}, '*')
-    close();
   }
 
   $set_fail.addEventListener('click', () => {
