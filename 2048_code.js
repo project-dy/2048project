@@ -25,12 +25,12 @@ let data = [];
 const history = [];
 
 function removeAllEventListener(){
-window.removeEventListener('keyup', key, false); // 패배시 이벤트 리스너 제거.
-window.removeEventListener('mousedown', mousedown, false); // 패배시 이벤트 리스너 제거.
-window.removeEventListener('mouseup', mouseup, false); // 패배시 이벤트 리스너 제거.
-$table.removeEventListener('touchstart', touchstart, false); // 패배시 이벤트 리스너 제거.
-$table.removeEventListener('touchend', touchend, false); // 패배시 이벤트 리스너 제거.
-removedAllEventListener = 1;
+    window.removeEventListener('keyup', key, false); // 패배시 이벤트 리스너 제거.
+    window.removeEventListener('mousedown', mousedown, false); // 패배시 이벤트 리스너 제거.
+    window.removeEventListener('mouseup', mouseup, false); // 패배시 이벤트 리스너 제거.
+    $table.removeEventListener('touchstart', touchstart, false); // 패배시 이벤트 리스너 제거.
+    $table.removeEventListener('touchend', touchend, false); // 패배시 이벤트 리스너 제거.
+    removedAllEventListener = 1;
 };
 
 let el;
@@ -44,20 +44,72 @@ html2canvas(document.body).then(function(canvas) {
     el.click();
     setTimeout(() => {
         if(v == 1){
-        window.opener.postMessage({score:$score.textContent,win:1}, '*');
-        close();
+            try {
+                window.opener.postMessage({score:$score.textContent,win:1}, '*');
+                close();
+            } catch (error) {
+                console.log(error);
+                if (infinity_mode == 0) {
+                if (confirm('무한모드를 활성화 하시겠습니까?')){
+                    infinity_mode = 1;
+                    $info.textContent = 'infinity mode enabled.';
+                    $info.style.color = 'blue';
+                } else {
+                    infinity_mode = -1;
+                };
+                };
+            };
         } else if(v == 0){
-        window.opener.postMessage({score:$score.textContent,win:0}, '*');
-        close();
+            try {
+                window.opener.postMessage({score:$score.textContent,win:0}, '*');
+                close();
+            } catch (error) {
+                console.log(error);
+                if (infinity_mode == 0) {
+                if (confirm('무한모드를 활성화 하시겠습니까?')){
+                    infinity_mode = 1;
+                    $info.textContent = 'infinity mode enabled.';
+                    $info.style.color = 'blue';
+                } else {
+                    infinity_mode = -1;
+                };
+                };
+            };
         };
     },1000);
     } else {
     if(v == 1){
-        window.opener.postMessage({score:$score.textContent,win:1}, '*');
-        close();
+        try {
+            window.opener.postMessage({score:$score.textContent,win:1}, '*');
+            close();
+        } catch (error) {
+            console.log(error);
+            if (infinity_mode == 0) {
+            if (confirm('무한모드를 활성화 하시겠습니까?')){
+                infinity_mode = 1;
+                $info.textContent = 'infinity mode enabled.';
+                $info.style.color = 'blue';
+            } else {
+                infinity_mode = -1;
+            };
+            };
+        };
     } else if(v == 0){
-        window.opener.postMessage({score:$score.textContent,win:0}, '*');
-        close();
+        try {
+            window.opener.postMessage({score:$score.textContent,win:0}, '*');
+            close();
+        } catch (error) {
+            console.log(error);
+            if (infinity_mode == 0) {
+            if (confirm('무한모드를 활성화 하시겠습니까?')){
+                infinity_mode = 1;
+                $info.textContent = 'infinity mode enabled.';
+                $info.style.color = 'blue';
+            } else {
+                infinity_mode = -1;
+            };
+            };
+        };
     };
     };
 });
@@ -274,15 +326,17 @@ if (infinity_mode != 1){
 function complete(n){
 end = 1;
 congratulation_audio.play();
-alert('🎉🎉🎉\n축하합니다. 2048을 만들었습니다!\n🎉🎉🎉');
-/*if(confirm('스크린샷을 저장 하시겠습니까?')){
+if (infinity_mode == 0) {
+    alert('🎉🎉🎉\n축하합니다. 2048을 만들었습니다!\n🎉🎉🎉');
+    /*if(confirm('스크린샷을 저장 하시겠습니까?')){
+        capture(1);
+    } else{
+        window.opener.postMessage({score:$score.textContent,win:1}, '*')
+        close();
+    };*/
     capture(1);
-} else{
-    window.opener.postMessage({score:$score.textContent,win:1}, '*')
-    close();
-};*/
-capture(1);
-// login(n);
+    // login(n);
+}
 }
 
 $set_fail.addEventListener('click', () => {
