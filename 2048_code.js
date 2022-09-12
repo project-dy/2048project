@@ -211,72 +211,79 @@ function restore(n){
 }
 let infinity_mode = 0
 
-function checknear(n) {
-  
+function checknear() {
+  for(i=0;i<4;i++) {
+    for(j=0;j<4;j++) {
+      if (i>0 && data[i][j]==data[i-1][j]) {return true}
+      else if (i<3 && data[i][j]==data[i+1][j]) {return true};
+      if (j>0 && data[i][j]==data[i][j-1]) {return true}
+      else if (j<3 && data[i][j]==data[i][j+1]) {return true};
+    }
+  }
+  return false;
 }
 
-
-
-
 function set_fail(n) {
-  if (infinity_mode != 1){
-    end = 1;
-    lose = 1;
-    alert(`패배했습니다... ${$score.textContent}점`);
-    // if(n == 'manual') login(`${$score.textContent}`); // 수동으로 포기 할시 바로 기록여부 확인 후 종료.
-    const yesOrNo = confirm('한턴을 되돌리시겠습니까?');
-    console.log('패배\n\n되돌리기 = ' + yesOrNo);
-    if(yesOrNo){
-      restore(n);
-    } else{
-      /*
-      let url = new URL(window.location.href);
-      console.log(url)
-      url = url.toString();
-      // let temp = 
-      let splited = url.substr(0, -9);
-      url = splited + '2048_Result.html';
-      console.log(url)
-      // var child = frames[0];
-      window.open('http://127.0.0.1:5500/2048_Result.html').postMessage($score.textContent, 'http://127.0.0.1:5500/2048_Result.html');
-      window.open("/2048_Result.html");
-      window.close();
-      // location.replace(url)
-      // login(`${$score.textContent}`);
-      */
-      try {
-        /*window.opener.postMessage({score:$score.textContent,win:0}, '*');
-        close();*/
-        capture(0);
-      } catch (error) {
-        console.log(error);
-        if (infinity_mode == 0) {
-          if (confirm('무한모드를 활성화 하시겠습니까?')){
-            infinity_mode = 1;
-            $info.textContent = 'infinity mode enabled.';
-            $info.style.color = 'blue';
-          } else {
-            infinity_mode = -1;
+  if (checknear()==false) {
+    if (infinity_mode != 1){
+      end = 1;
+      lose = 1;
+      alert(`패배했습니다... ${$score.textContent}점`);
+      // if(n == 'manual') login(`${$score.textContent}`); // 수동으로 포기 할시 바로 기록여부 확인 후 종료.
+      const yesOrNo = confirm('한턴을 되돌리시겠습니까?');
+      console.log('패배\n\n되돌리기 = ' + yesOrNo);
+      if(yesOrNo){
+        restore(n);
+      } else{
+        /*
+        let url = new URL(window.location.href);
+        console.log(url)
+        url = url.toString();
+        // let temp = 
+        let splited = url.substr(0, -9);
+        url = splited + '2048_Result.html';
+        console.log(url)
+        // var child = frames[0];
+        window.open('http://127.0.0.1:5500/2048_Result.html').postMessage($score.textContent, 'http://127.0.0.1:5500/2048_Result.html');
+        window.open("/2048_Result.html");
+        window.close();
+        // location.replace(url)
+        // login(`${$score.textContent}`);
+        */
+        try {
+          /*window.opener.postMessage({score:$score.textContent,win:0}, '*');
+          close();*/
+          capture(0);
+        } catch (error) {
+          console.log(error);
+          if (infinity_mode == 0) {
+            if (confirm('무한모드를 활성화 하시겠습니까?')){
+              infinity_mode = 1;
+              $info.textContent = 'infinity mode enabled.';
+              $info.style.color = 'blue';
+            } else {
+              infinity_mode = -1;
+            };
           };
         };
-      };
-    }
-      /*
-        lose_audio.currentTime = 0;
-        lose_audio.play();
-      $info.textContent = 'LOSE!';
-      $info.style.color = 'red';
-      */
-  } else {
-    if (infinity_mode == 0) {
-      if (confirm('무한모드를 활성화 하시겠습니까?')){
-        infinity_mode = 1;
-        $info.textContent = 'infinity mode enabled.';
-        $info.style.color = 'blue';
-      } else {
-        infinity_mode = -1;
-      };
-    }
+      }
+        /*
+          lose_audio.currentTime = 0;
+          lose_audio.play();
+        $info.textContent = 'LOSE!';
+        $info.style.color = 'red';
+        */
+    } else {
+      if (infinity_mode == 0) {
+        if (confirm('무한모드를 활성화 하시겠습니까?')){
+          infinity_mode = 1;
+          $info.textContent = 'infinity mode enabled.';
+          $info.style.color = 'blue';
+        } else {
+          infinity_mode = -1;
+        };
+      }
+    }    
   }
 }
 
@@ -306,7 +313,7 @@ $back.addEventListener('click', () => {
 // $table -> $fragment -> $tr -> $td
 function startGame() {
     const $fragment = document.createDocumentFragment();
-    [1, 2, 3, 4].forEach(function () {
+    [1, 2, 3, 4].forEach(() => {
       const rowData = [];
       data.push(rowData);
       const $tr = document.createElement('tr');
@@ -324,8 +331,8 @@ function startGame() {
 
 function put2ToRandomCell() {
   const emptyCells = []; // [[i1, j1], [i2, j2], [i3, j3]]
-  data.forEach(function (rowData, i) {
-    rowData.forEach(function (cellData, j) {
+  data.forEach((rowData, i) => {
+    rowData.forEach((cellData, j) => {
       if (!cellData) {
         emptyCells.push([i, j]);
       }
@@ -362,10 +369,16 @@ data = [
 draw();
 */
 function moveCells(direction) {
-  history.push({
-    table: JSON.parse(JSON.stringify(data)),
-    score: $score.textContent,
-  });
+  if (history.length==0 || history[history.length-1].table != data) {
+    if (history.length==0) {console.log('wooa!')}
+    if (history.length>0&&history[history.length-1].table != data) {console.log('fuckin;')}
+    history.push({
+      table: JSON.parse(JSON.stringify(data)),
+      score: $score.textContent
+    });
+  }
+
+  console.log(typeof(history[history.length-1].table),typeof(data))
   switch (direction) {
     case 'left': {
       const newData = [[], [], [], []];
@@ -387,7 +400,7 @@ function moveCells(direction) {
           }
         });
       });
-      console.log(newData);
+      console.log(data);
       [1, 2, 3, 4].forEach((rowData, i) => {
         [1, 2, 3, 4].forEach((cellData, j) => {
           data[i][j] = Math.abs(newData[i][j]) || 0;
@@ -430,6 +443,7 @@ function moveCells(direction) {
           if (cellData) {
             const currentRow = newData[j]
             const prevData = currentRow[currentRow.length - 1];
+            console.log(i,j,newData,currentRow);
             if (prevData === cellData) {
               const score = parseInt($score.textContent);
               $score.textContent = score + currentRow[currentRow.length - 1] * 2;
