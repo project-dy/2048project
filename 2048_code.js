@@ -1,3 +1,4 @@
+let infinity_mode = 0;
 let end = 0;
 let lose = 0;
 let only_move = 1;
@@ -25,6 +26,7 @@ let how_many_temp;
 let data = [];
 const history = [];
 
+
 function removeAllEventListener(){
   window.removeEventListener('keyup', key, false); // 패배시 이벤트 리스너 제거.
   window.removeEventListener('mousedown', mousedown, false); // 패배시 이벤트 리스너 제거.
@@ -35,7 +37,17 @@ function removeAllEventListener(){
 };
 
 let el;
-
+/*
+if (infinity_mode == 0) {
+  if (confirm('무한모드를 활성화 하시겠습니까?')){
+    infinity_mode = 1;
+    $info.textContent = 'infinity mode enabled.';
+    $info.style.color = 'blue';
+  } else {
+    infinity_mode = -1;
+  };
+}
+*/
 function capture(v){
   html2canvas(document.body).then(function(canvas) {
     if(confirm('스크린샷을 내려 받을까요?')){
@@ -45,20 +57,72 @@ function capture(v){
       el.click();
       setTimeout(() => {
         if(v == 1){
-          window.opener.postMessage({score:$score.textContent,win:1}, '*');
-          close();
+          try {
+            window.opener.postMessage({score:$score.textContent,win:1}, '*');
+            close();
+          } catch (error) {
+            console.log(error);
+            if (infinity_mode == 0) {
+              if (confirm('무한모드를 활성화 하시겠습니까?')){
+                infinity_mode = 1;
+                $info.textContent = 'infinity mode enabled.';
+                $info.style.color = 'blue';
+              } else {
+                infinity_mode = -1;
+              };
+            };
+          };
         } else if(v == 0){
-          window.opener.postMessage({score:$score.textContent,win:0}, '*');
-          close();
+          try {
+              window.opener.postMessage({score:$score.textContent,win:0}, '*');
+              close();
+          } catch (error) {
+            console.log(error);
+            if (infinity_mode == 0) {
+              if (confirm('무한모드를 활성화 하시겠습니까?')){
+                infinity_mode = 1;
+                $info.textContent = 'infinity mode enabled.';
+                $info.style.color = 'blue';
+              } else {
+                infinity_mode = -1;
+              };
+            };
+          };
         };
       },1000);
     } else {
       if(v == 1){
-        window.opener.postMessage({score:$score.textContent,win:1}, '*');
-        close();
+        try {
+          window.opener.postMessage({score:$score.textContent,win:1}, '*');
+          close();
+        } catch (error) {
+          console.log(error);
+          if (infinity_mode == 0) {
+            if (confirm('무한모드를 활성화 하시겠습니까?')){
+              infinity_mode = 1;
+              $info.textContent = 'infinity mode enabled.';
+              $info.style.color = 'blue';
+            } else {
+              infinity_mode = -1;
+            };
+          };
+        };
       } else if(v == 0){
-        window.opener.postMessage({score:$score.textContent,win:0}, '*');
-        close();
+        try{
+          window.opener.postMessage({score:$score.textContent,win:0}, '*');
+          close();
+        } catch (error) {
+          console.log(error);
+          if (infinity_mode == 0) {
+            if (confirm('무한모드를 활성화 하시겠습니까?')){
+              infinity_mode = 1;
+              $info.textContent = 'infinity mode enabled.';
+              $info.style.color = 'blue';
+            } else {
+              infinity_mode = -1;
+            };
+          };
+        };
       };
     };
   });
@@ -206,10 +270,9 @@ function restore(n){
     $hmr.textContent = how_many_temp
     data = prevData.table;
     draw();
-    console.log('완료!')
+    console.log('완료!');
   }
 }
-let infinity_mode = 0
 
 function checknear() {
   for(i=0;i<4;i++) {
@@ -220,11 +283,12 @@ function checknear() {
       else if (j<3 && data[i][j]==data[i][j+1]) {return true};
     }
   }
+  
   return false;
 }
 
 function set_fail(n) {
-  if (checknear()==false) {
+  if (checknear()==false || n=='manual') {
     if (infinity_mode != 1){
       end = 1;
       lose = 1;
