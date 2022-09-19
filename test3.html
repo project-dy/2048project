@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Crypto</title>
+</head>
+<body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/core.min.js" integrity="sha512-t8vdA86yKUE154D1VlNn78JbDkjv3HxdK/0MJDMBUXUjshuzRgET0ERp/0MAgYS+8YD9YmFwnz6+FWLz1gRZaw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/sha256.min.js" integrity="sha512-fv28nWHTcWfoN3KBd2fs+YWsirQ+L0b/iIRS7HcNDPSAwxy6oSjRrYjQ+OtJoJz0wUKsVcPYgwcZzK04KfHD0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+  console.log('Start!');
+  const value = '이문은 테스트용입니다.';
+  const value2 = '이문은 테스트용입니다';
+  let encrypted;
+  function start_encrypte(v){
+    console.log('encrypte start.');
+    encrypted = CryptoJS.SHA256(v).toString();
+  };
+  start_encrypte(value);
+  console.log(`1org: ${value}, enc: ${encrypted}`);
+  start_encrypte(value2);
+  console.log(`2org: ${value2}, enc: ${encrypted}`);
+  start_encrypte(value);
+  console.log(`1org: ${value}, enc: ${encrypted}`);
+  start_encrypte(value2);
+  console.log(`2org: ${value2}, enc: ${encrypted}`);
+</script>
+</body>
+</html>
