@@ -1,6 +1,7 @@
 const congratulation_audio = new Audio('congratulation.wav');
 const lose_audio = new Audio('2048Lose_Mastering.wav');
 const $info = document.getElementById('info');
+let e;
 $info.textContent = '';
 /*
 const url = new URL(window.location.href);
@@ -29,7 +30,8 @@ if (location.href == 'http://127.0.0.1:5500/2048_Result.html'){
     game_window = window.open('https://project-dy.github.io/project-dy/2048.html')
 };
 };
-const receiveMessage = async (e) => {
+const receiveMessage = async (d) => {
+e = d;
 if(e.data.hasOwnProperty('score')){
     console.log(e);
     console.log(e.data.score);
