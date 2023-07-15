@@ -3,8 +3,6 @@ const express = require('express'); // 표현 불러오기
 const app = express(); // 표현 활성화
 const fs = require('fs');
 
-
-
 // 사용자 정보를 저장할 users.json 파일 경로
 const USERS_FILE_PATH = './users.json';
 
