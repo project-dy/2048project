@@ -15,20 +15,12 @@ let score = undefined;
 let game_window = undefined;
 $info.textContent = '게임 결과를 기록하기위한 창입니다. 창을 닫을시기록이 되지 않습니다. 기록을 원하지 않을 경우 이창을 닫고, 기록을 원하실경우 이창을 열어두십시오.';
 let test_window = undefined;
-if (location.href == 'http://127.0.0.1:5500/2048_Result.html'){
-test_window = window.open('http://127.0.0.1:5500/popup.html');
-} else if (location.href == 'https://project-dy.github.io/project-dy/2048_Result.html') {
-test_window = window.open('https://project-dy.github.io/project-dy/popup.html')
-};
+test_window = window.open('./popup.html');
 let test = undefined;
 if (!test_window) {
 $info.textContent = '팝업차단을 해제후 새로고침해주세요.'
 } else {
-if (location.href == 'http://127.0.0.1:5500/2048_Result.html'){
-    game_window = window.open('http://127.0.0.1:5500/2048.html');
-} else if (location.href == 'https://project-dy.github.io/project-dy/2048_Result.html') {
-    game_window = window.open('https://project-dy.github.io/project-dy/2048.html')
-};
+game_window = window.open('./2048.html');
 };
 const receiveMessage = async (d) => {
 e = d;
