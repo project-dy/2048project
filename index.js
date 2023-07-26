@@ -1,7 +1,12 @@
 // 추가 기능들 가져오기
 const express = require('express'); // 표현 불러오기
-const app = express(); // 표현 활성화
+const app = express(); // express 활성화
 const fs = require('fs');
+// import morgan
+const morgan = require('morgan');
+
+// use morgan
+app.use(morgan('dev'));
 
 // 사용자 정보를 저장할 users.json 파일 경로
 const USERS_FILE_PATH = './users.json';
@@ -104,6 +109,18 @@ app.get('/users/register/:id/:pw/:name', (req, res) => {
   });
 });
 
+// If some one connected to the root directory, show the usage of this API
+app.get('/', (req, res) => {
+  // statuscode 설정
+  res.status(200);
+  // 응답
+  res.send(`<h1>This page just has a guide. Not API.</h1>
+  <h2>We don't allow you crowling this site.</h2>
+  Usage: GET /users
+  GET /users/:id/:pw
+  GET /users/register/:id/:pw/:name
+  And more...`);
+});
 // 서버 실행
 app.listen(3000, () => {
   console.log('서버 실행 중...');
